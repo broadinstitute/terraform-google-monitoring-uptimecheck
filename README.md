@@ -2,7 +2,7 @@
 
 ## Usage
 
-```
+```terraform
 module "uptimecheck-example-com" {
   source  = "kenju/monitoring-uptimecheck/google"
   version = "0.1.0"
