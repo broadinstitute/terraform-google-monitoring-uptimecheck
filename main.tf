@@ -4,9 +4,9 @@ locals {
 
 resource "google_monitoring_uptime_check_config" "uptime-check-config" {
   display_name     = local.url
-  timeout          = "10s"
+  timeout          = var.timeout
   period           = "900s"
-  selected_regions = []
+  selected_regions = var.regions
   project          = var.project
 
   http_check {
