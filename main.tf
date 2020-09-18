@@ -3,11 +3,13 @@ locals {
 }
 
 resource "google_monitoring_uptime_check_config" "uptime-check-config" {
+  count            = var.enable ? 1 : 0
   display_name     = local.url
   timeout          = var.timeout
   period           = "900s"
   selected_regions = var.regions
   project          = var.project
+  depends_on       = [var.dependencies]
 
   http_check {
     headers      = {}
@@ -36,7 +38,9 @@ resource "google_monitoring_uptime_check_config" "uptime-check-config" {
 }
 
 resource "google_monitoring_alert_policy" "uptime-check" {
-  project = var.project
+  count      = var.enable ? 1 : 0
+  project    = var.project
+  depends_on = [var.dependencies]
 
   display_name          = "uptime check failed for ${local.url}"
   notification_channels = var.notification_channels
