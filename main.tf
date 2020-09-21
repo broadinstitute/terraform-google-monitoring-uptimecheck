@@ -50,7 +50,7 @@ resource "google_monitoring_alert_policy" "uptime-check" {
   conditions {
     display_name = "Uptime Health Check on ${var.host}"
     condition_threshold {
-      filter          = "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" resource.type=\"uptime_url\" metric.label.\"check_id\"=\"${basename(google_monitoring_uptime_check_config.uptime-check-config.id)}\""
+      filter          = "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" resource.type=\"uptime_url\" metric.label.\"check_id\"=\"${basename(google_monitoring_uptime_check_config.uptime-check-config[0].id)}\""
       duration        = "0s"
       threshold_value = 1
       comparison      = "COMPARISON_GT"
