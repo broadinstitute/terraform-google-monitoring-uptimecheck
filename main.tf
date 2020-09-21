@@ -3,6 +3,7 @@ locals {
 }
 
 resource "google_monitoring_uptime_check_config" "uptime-check-config" {
+  provider         = google-beta.target
   count            = var.enable ? 1 : 0
   display_name     = local.url
   timeout          = var.timeout
@@ -38,6 +39,7 @@ resource "google_monitoring_uptime_check_config" "uptime-check-config" {
 }
 
 resource "google_monitoring_alert_policy" "uptime-check" {
+  provider   = google-beta.target
   count      = var.enable ? 1 : 0
   project    = var.project
   depends_on = [var.dependencies]
