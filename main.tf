@@ -3,11 +3,14 @@ locals {
 }
 
 resource "google_monitoring_uptime_check_config" "uptime-check-config" {
+  provider         = google-beta.target
+  count            = var.enable ? 1 : 0
   display_name     = local.url
   timeout          = var.timeout
   period           = "900s"
   selected_regions = var.regions
   project          = var.project
+  depends_on       = [var.dependencies]
 
   http_check {
     headers      = {}
@@ -36,7 +39,10 @@ resource "google_monitoring_uptime_check_config" "uptime-check-config" {
 }
 
 resource "google_monitoring_alert_policy" "uptime-check" {
-  project = var.project
+  provider   = google-beta.target
+  count      = var.enable ? 1 : 0
+  project    = var.project
+  depends_on = [var.dependencies]
 
   display_name          = "uptime check failed for ${local.url}"
   notification_channels = var.notification_channels
@@ -44,7 +50,7 @@ resource "google_monitoring_alert_policy" "uptime-check" {
   conditions {
     display_name = "Uptime Health Check on ${var.host}"
     condition_threshold {
-      filter          = "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" resource.type=\"uptime_url\" metric.label.\"check_id\"=\"${basename(google_monitoring_uptime_check_config.uptime-check-config.id)}\""
+      filter          = "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" resource.type=\"uptime_url\" metric.label.\"check_id\"=\"${basename(google_monitoring_uptime_check_config.uptime-check-config[0].id)}\""
       duration        = "0s"
       threshold_value = 1
       comparison      = "COMPARISON_GT"
